@@ -7,7 +7,7 @@ const app = Fastify();
 app.register(fastifyCors, { origin: '*' });
 
 const server = await app.listen({ port: 9004, host: '0.0.0.0' });
-console.log('🚀 Fastify server running on http://localhost:9004');
+console.log('Fastify server running on http://localhost:9004');
 
 const io = new Server(app.server, {
   cors: { origin: '*' },
@@ -28,9 +28,9 @@ io.on('connection', socket => {
 
 // Start FFmpeg to capture webcam (or RTSP if needed)
 const ffmpeg = spawn('ffmpeg', [
-  '-f', 'dshow',
-  '-i', 'video=Integrated Camera', //TODO:
-  '-vf', 'scale=640:360,fps=15',
+  '-f', 'dshow',  // Windows: 'dshow', Mac: 'avfoundation', Linux: 'v4l2'
+  '-i', 'video=Integrated Camera', //TODO: Masukin nama kamera yang ada di sistem
+  '-vf', 'scale=640:360,fps=24',
   '-f', 'image2pipe',
   '-q:v', '5',
   '-vcodec', 'mjpeg',
