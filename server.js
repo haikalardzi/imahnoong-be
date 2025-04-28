@@ -1,53 +1,26 @@
 import Fastify from 'fastify';
 import fastifyCors from 'fastify-cors';
 import { Server } from 'socket.io';
-import { spawn } from 'child_process';
 
-const app = Fastify();
-app.register(fastifyCors, { origin: '*' });
+import registerTelescopeStream from './src/modules/telescope-stream/index.js';
+// import { registerStellariumApi } from './features/stellarium-api/index.js';
 
-const server = await app.listen({ port: 9004, host: '0.0.0.0' });
-console.log('Fastify server running on http://localhost:9004');
-
-const io = new Server(app.server, {
-  cors: { origin: '*' },
-});
-
-let sockets = [];
-
-// Handle socket connections
-io.on('connection', socket => {
-  console.log('🟢 Client connected');
-  sockets.push(socket);
-
-  socket.on('disconnect', () => {
-    console.log('🔴 Client disconnected');
-    sockets = sockets.filter(s => s !== socket);
+export async function buildApp() {
+  const app = Fastify();
+  app.register(fastifyCors, { origin: '*' });
+  
+  // --- Feature registration ---
+  // await registerStellariumApi(app);
+  
+  const server = await app.listen({ port: 9004, host: '0.0.0.0' });
+  const io = new Server(app.server, {
+    cors: { origin: '*' },
   });
-});
+  
+  // --- Feature registration Websocket ---
+  await registerTelescopeStream(io);
 
-// Start FFmpeg to capture webcam (or RTSP if needed)
-const ffmpeg = spawn('ffmpeg', [
-  '-f', 'dshow',  // Windows: 'dshow', Mac: 'avfoundation', Linux: 'v4l2'
-  '-i', 'video=Integrated Camera', //TODO: Masukin nama kamera yang ada di sistem
-  '-vf', 'scale=640:360,fps=24',
-  '-f', 'image2pipe',
-  '-q:v', '5',
-  '-vcodec', 'mjpeg',
-  'pipe:1'
-]);
+  return { app, io };
+}
 
-ffmpeg.stdout.on('data', (chunk) => {
-  sockets.forEach(socket => {
-    socket.emit('video-frame', chunk);
-  });
-});
-
-ffmpeg.stderr.on('data', (data) => {
-  // You can log this if debugging FFmpeg
-  // console.error(`ffmpeg stderr: ${data}`);
-});
-
-// ffmpeg.on('exit', () => {
-//   console.log('⚠️ FFmpeg exited');
-// });
+buildApp();
