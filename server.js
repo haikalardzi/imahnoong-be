@@ -2,7 +2,7 @@ import Fastify from 'fastify';
 import fastifyCors from 'fastify-cors';
 import { Server } from 'socket.io';
 
-import registerTelescopeStream from './src/modules/telescope-stream/index.js';
+import registerTelescopeStream from './src/features/telescope-stream/index.js';
 // import { registerStellariumApi } from './features/stellarium-api/index.js';
 
 export async function buildApp() {
