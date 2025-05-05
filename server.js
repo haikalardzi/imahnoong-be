@@ -4,7 +4,6 @@ dotenv.config();
 import Fastify from 'fastify';
 import FastifyCors from '@fastify/cors';
 import FastifyJwt from '@fastify/jwt';
-import { websocket } from 'fastify-uws';
 
 import { Server } from 'socket.io';
 
@@ -27,7 +26,6 @@ async function buildApp() {
   // --- Plugin Registration ---
   app.register(FastifyJwt, { secret: process.env.JWT_SECRET || 'your_strong_secret' });
   app.register(FastifyCors, corsOptions);
-  app.register(websocket, {ssl: false});
   
   // --- Middleware Decorate ---
   app.decorate('authenticate', authenticate);
