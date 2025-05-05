@@ -2,29 +2,40 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import Fastify from 'fastify';
-import fastifyCors from 'fastify-cors';
+import FastifyCors from '@fastify/cors';
+import FastifyJwt from '@fastify/jwt';
+import { websocket } from 'fastify-uws';
+
 import { Server } from 'socket.io';
 
-import registerTelescopeStream from './src/features/telescope-stream/index.js';
-import registerStellariumApi from './src/features/api/Stellarium/index.js';
-import registerNasaFeature from './src/features/api/NASA/index.js';
+// imports
+import authenticate from './src/middleware/authenticate.js';
+import corsOptions from './src/config/cors.js';
 
+// HTTP routes imports
+import webRoutes from './src/routes/web.js';
+
+// Websocket imports
+import registerTelescopeStream from './src/features/telescope-stream/index.js';
 
 async function buildApp() {
-  const TELESCOPE_LATITUDE= parseFloat(process.env.TELESCOPE_LATITUDE);
-  const TELESCOPE_LONGITUDE= parseFloat(process.env.TELESCOPE_LONGITUDE);
+  const TELESCOPE_LATITUDE = parseFloat(process.env.TELESCOPE_LATITUDE);
+  const TELESCOPE_LONGITUDE = parseFloat(process.env.TELESCOPE_LONGITUDE);
 
   const app = Fastify();
-  app.register(fastifyCors, { origin: '*' });
-  //Add hello world on root
-  app.get('/', async (request, reply) => {
-    return { hello: 'world' };
-  });
+
+  // --- Plugin Registration ---
+  app.register(FastifyJwt, { secret: process.env.JWT_SECRET || 'your_strong_secret' });
+  app.register(FastifyCors, corsOptions);
+  app.register(websocket, {ssl: false});
   
-  // --- Feature registration ---
-  await registerStellariumApi(app); // route: /api/stellarium/object
-  await registerNasaFeature(app); // route: /api/nasa
+  // --- Middleware Decorate ---
+  app.decorate('authenticate', authenticate);
   
+  // --- Route registration ---
+  await webRoutes(app);
+  
+  // --- Server start ---
   const server = await app.listen({ port: 9004, host: '0.0.0.0' });
   const io = new Server(app.server, {
     cors: { origin: '*' },

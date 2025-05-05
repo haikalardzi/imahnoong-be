@@ -1,5 +1,5 @@
-import { getObjectMetadataHandler } from './stellarium.controller.js';
+// import { stellariumMetadataHandler } from './stellarium.controller.js';
 
-export default async function stellariumRoutes(app, opts) {
-    app.get('/stellarium/object', getObjectMetadataHandler);
-}
+// export default async function stellariumRoutes(app, opts) {
+//     app.get('/stellarium/object', stellariumMetadataHandler);
+// }

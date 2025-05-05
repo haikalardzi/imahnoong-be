@@ -1,9 +1,9 @@
-import { Server } from 'socket.io';
+import { Server } from "socket.io";
 
 let sockets = [];
 
 /**
- * 
+ * io type is fastify
  * @param {Server} io 
  * @returns 
  */

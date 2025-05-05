@@ -1,5 +1,5 @@
-import { getNasaMetadataHandler } from './nasa.controller.js';
+// import { nasaMetadataHandler } from './nasa.controller.js';
 
-export default async function nasaRoutes(fastify, opts) {
-  fastify.get('/nasa/object', getNasaMetadataHandler);
-}
+// export default async function nasaRoutes(fastify, opts) {
+//   fastify.get('/nasa/object', nasaMetadataHandler);
+// }

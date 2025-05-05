@@ -1,6 +1,6 @@
 import { getNasaObjectMetadata } from './nasa.service.js';
 
-export async function getNasaMetadataHandler(request, reply) {
+export async function nasaMetadataHandler(request, reply) {
   const { name } = request.query;
 
   if (!name) {

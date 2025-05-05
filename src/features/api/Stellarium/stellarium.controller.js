@@ -1,6 +1,6 @@
 import { getObjectDataByName } from './stellarium.service.js';
 
-export async function getObjectMetadataHandler(request, reply) {
+export async function stellariumMetadataHandler(request, reply) {
   const { name } = request.query;
 
     if (!name) {

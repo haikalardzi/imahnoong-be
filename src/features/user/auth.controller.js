@@ -1,0 +1,21 @@
+import { createUser, findUserByUsername, verifyPassword } from './auth.service.js';
+
+export async function registerHandler(req, reply) {
+  const { username, password } = req.body;
+  const existing = await findUserByUsername(username);
+  if (existing) return reply.code(400).send({ error: 'User already exists' });
+
+  await createUser(username, password);
+  reply.send({ message: 'User registered' });
+}
+
+export async function loginHandler(req, reply) {
+  const { username, password } = req.body;
+  const user = await findUserByUsername(username);
+  if (!user || !verifyPassword(password, user.password)) {
+    return reply.code(401).send({ error: 'Invalid credentials' });
+  }
+
+  const token = await reply.jwtSign({ id: user.id, username: user.username });
+  reply.send({ token });
+}
