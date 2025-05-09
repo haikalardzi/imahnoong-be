@@ -4,7 +4,7 @@ export function startFfmpeg(onFrame) {
   const ffmpeg = spawn('ffmpeg', [
     '-f', 'dshow',
     '-i', 'video=Integrated Camera',
-    '-vf', 'scale=1280:720,fps=24',
+    '-vf', 'scale=1400:788,fps=24',
     '-f', 'image2pipe',
     '-q:v', '5',
     '-vcodec', 'mjpeg',
