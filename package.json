@@ -9,7 +9,8 @@
     "jsonwebtoken": "^9.0.2",
     "knex": "^3.1.0",
     "pg": "^8.15.6",
-    "socket.io": "^4.8.1"
+    "socket.io": "^4.8.1",
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.52.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
