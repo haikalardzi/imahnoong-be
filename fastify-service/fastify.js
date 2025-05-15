@@ -14,12 +14,12 @@ import corsOptions from './config/cors.js';
 // HTTP routes imports
 import webRoutes from './routes/web.js';
 
-// Websocket imports
-import registerTelescopeStream from './features/telescope-stream/index.js';
-
 async function buildApp() {
   const TELESCOPE_LATITUDE = parseFloat(process.env.TELESCOPE_LATITUDE);
   const TELESCOPE_LONGITUDE = parseFloat(process.env.TELESCOPE_LONGITUDE);
+
+  const PORT = process.env.SERVER_PORT || 9004;
+  const HOST = process.env.SERVER_HOST || '0.0.0.0';
 
   const app = Fastify();
 
@@ -34,12 +34,12 @@ async function buildApp() {
   await webRoutes(app);
   
   // --- Server start ---
-  const server = await app.listen({ port: 9004, host: '0.0.0.0' });
+  const server = await app.listen({ port: PORT, host: HOST });
   
   // --- Feature registration Websocket ---
   // await registerTelescopeStream(io); // route: /stream
 
-  console.log(`Server listening on ${server}`);
+  console.log(`Server listening on http://${HOST}:${PORT}`);
   console.log(`telescope latitude: ${TELESCOPE_LATITUDE}, longitude: ${TELESCOPE_LONGITUDE}`);
 
   return app;
