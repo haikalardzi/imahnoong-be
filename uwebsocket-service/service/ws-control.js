@@ -9,7 +9,7 @@ export function registerControlEndpoint(app, onCommand) {
       if (!isBinary) {
         try {
           const command = JSON.parse(Buffer.from(message).toString());
-          console.log('Received command:', command);
+          console.log('Received command:', command.dir);
           if (onCommand) onCommand(command);
         } catch (err) {
           console.error('Invalid JSON command:', err);

@@ -2,6 +2,7 @@
 import { stellariumMetadataHandler } from "../features/api/Stellarium/stellarium.controller.js";
 import { nasaMetadataHandler } from "../features/api/NASA/nasa.controller.js";
 import { loginHandler, registerHandler } from "../features/user/auth.controller.js";
+import { getPlanetaryDataHandler } from "../features/api/AstronomyAPI/astronomy.controller.js";
 
 /**
  * 
@@ -9,8 +10,14 @@ import { loginHandler, registerHandler } from "../features/user/auth.controller.
  */
 export default async function webRoutes(fastify) {
     fastify.get('/', (request, reply) => reply.send('hello world!'));
-    fastify.get('/stellarium/object', stellariumMetadataHandler);
-    fastify.get('/nasa/object', nasaMetadataHandler);
+    
+    //API External
+    fastify.register(async function (routes) {
+        // routes.get('/stellarium/object', stellariumMetadataHandler);
+        // routes.get('/nasa/object', nasaMetadataHandler);
+        routes.get('/astronomy/planetary', getPlanetaryDataHandler);
+    }, { prefix: '/api' });
+
     fastify.post('/register', registerHandler);
     fastify.post('/login', loginHandler);
 }

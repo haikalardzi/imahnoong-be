@@ -7,6 +7,9 @@ export function up(knex) {
       table.increments('id').primary();
       table.string('username').unique().notNullable();
       table.string('password').notNullable();
+      table.enum('role', ['user', 'admin']).defaultTo('user');
+      table.timestamp('observasi_mulai').nullable();
+      table.timestamp('observasi_selesai').nullable();
       table.timestamp('created_at').defaultTo(knex.fn.now());
     });
   }

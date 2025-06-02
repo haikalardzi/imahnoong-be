@@ -1,6 +1,3 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
 import Fastify from 'fastify';
 import FastifyCors from '@fastify/cors';
 import FastifyJwt from '@fastify/jwt';
@@ -39,7 +36,7 @@ async function buildApp() {
   // --- Feature registration Websocket ---
   // await registerTelescopeStream(io); // route: /stream
 
-  console.log(`Server listening on http://${HOST}:${PORT}`);
+  console.log(`✅ Fastify listening on http://${HOST}:${PORT}`);
   console.log(`telescope latitude: ${TELESCOPE_LATITUDE}, longitude: ${TELESCOPE_LONGITUDE}`);
 
   return app;
