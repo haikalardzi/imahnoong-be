@@ -15,7 +15,7 @@ export default async function webRoutes(fastify) {
     fastify.register(async function (routes) {
         // routes.get('/stellarium/object', stellariumMetadataHandler);
         // routes.get('/nasa/object', nasaMetadataHandler);
-        routes.get('/astronomy/planetary', getPlanetaryDataHandler);
+        routes.get('/astronomy-api/planetary', getPlanetaryDataHandler);
     }, { prefix: '/api' });
 
     fastify.post('/register', registerHandler);
