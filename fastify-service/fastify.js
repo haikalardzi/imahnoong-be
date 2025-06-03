@@ -6,6 +6,7 @@ import FastifyJwt from '@fastify/jwt';
 
 // imports
 import authenticate from './middleware/authenticate.js';
+import requireAdmin from './middleware/requireAdmin.js';
 import corsOptions from './config/cors.js';
 
 // HTTP routes imports
@@ -26,6 +27,7 @@ async function buildApp() {
   
   // --- Middleware Decorate ---
   app.decorate('authenticate', authenticate);
+  app.decorate('requireAdmin', requireAdmin);
   
   // --- Route registration ---
   await webRoutes(app);
