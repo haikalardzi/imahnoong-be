@@ -5,15 +5,15 @@ import bcrypt from 'bcryptjs';
  * @returns { Promise<void> } 
  */
 export async function seed(knex) {
-  await knex('users').del();
+  // await knex('users').del();
 
-  const hash = bcrypt.hashSync('imahnoong', 12);
+  // const hash = bcrypt.hashSync('imahnoong', 12);
 
-  await knex('users').insert([
-    { 
-      username: 'admin', 
-      password: hash,
-      role: 'admin'
-    }
-  ]);
+  // await knex('users').insert([
+  //   { 
+  //     username: 'admin', 
+  //     password: hash,
+  //     role: 'admin'
+  //   }
+  // ]);
 }
