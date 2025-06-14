@@ -20,7 +20,6 @@ export function updateCurrentObjectHandler(request, response) {
 
 export function cacheAstroAPIHandler(request, response) {
     try {
-        console.log(request.body);
         const data = cacheAPIData(request.body);
         response.send(data);  // You can also refine this to send only data.data.table.rows
     } catch (error) {
@@ -31,7 +30,6 @@ export function cacheAstroAPIHandler(request, response) {
 export function getAstroAPIHandler(request, response) {
     try {
         const data = fetchAPIData();
-        console.log(data);
         response.send(data);  // You can also refine this to send only data.data.table.rows
     } catch (error) {
         response.status(500).send({ error: error.message });

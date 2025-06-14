@@ -1,7 +1,6 @@
 import cache from "../../utils/cache.js";
 
 export function fetchCurrentObject(){
-    console.log(cache.getCurrentData());
     return cache.getCurrentData();
 }
 

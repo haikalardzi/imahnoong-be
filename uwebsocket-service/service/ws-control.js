@@ -1,9 +1,16 @@
 // ws-control.js
+import uWS from 'uWebSockets.js';
+import { parseIP } from '../helper/byteParser.js';
 
+/**
+ * 
+ * @param {uWS.TemplatedApp} app 
+ * @param {*} onCommand 
+ */
 export function registerControlEndpoint(app, onCommand) {
   app.ws('/control', {
     open: (ws) => {
-      console.log('Client connected to /control');
+      console.log(parseIP(ws.getRemoteAddress()) + ' connected to /control');
     },
     message: (ws, message, isBinary) => {
       if (!isBinary) {

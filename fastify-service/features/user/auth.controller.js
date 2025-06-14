@@ -14,7 +14,6 @@ export async function registerHandler(req, reply) {
 
 export async function loginHandler(req, reply) {
   try {
-    console.log(req.body);
     const { username, password } = req.body;
     const user = await findUserByUsername(username);
     if (!user || !verifyPassword(password, user.password)) {
@@ -25,7 +24,6 @@ export async function loginHandler(req, reply) {
     reply.send({ token });
   } catch (err) {
     // print now
-    console.log(err);
     reply.code(500).send({ error: err.message });
   }
 }
