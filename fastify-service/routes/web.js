@@ -1,10 +1,11 @@
 //set all routes here
-import { stellariumMetadataHandler } from "../features/api/Stellarium/stellarium.controller.js";
-import { nasaMetadataHandler } from "../features/api/NASA/nasa.controller.js";
+// import { stellariumMetadataHandler } from "../features/api/Stellarium/stellarium.controller.js";
+// import { nasaMetadataHandler } from "../features/api/NASA/nasa.controller.js";
 import { loginHandler, registerHandler } from "../features/user/auth.controller.js";
 import { getPlanetaryDataHandler } from "../features/api/AstronomyAPI/astronomy.controller.js";
 import { getCurrentObjectHandler, updateCurrentObjectHandler, cacheAstroAPIHandler, getAstroAPIHandler } from "../features/telescope-control/currentObject.controller.js";
 import { fetchAllReservation, fetchUserReservation, makeReservation } from "../features/reservation/reservation.controller.js";
+
 /**
  * 
  * @param {import("fastify").FastifyInstance} fastify 

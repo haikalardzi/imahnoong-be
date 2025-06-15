@@ -20,7 +20,7 @@ export async function loginHandler(req, reply) {
       return reply.code(401).send({ error: 'Invalid credentials' });
     }
   
-    const token = await reply.jwtSign({ id: user.id, username: user.username });
+    const token = await reply.jwtSign({ id: user.id, username: user.username, role: user.role });
     reply.send({ token });
   } catch (err) {
     // print now
