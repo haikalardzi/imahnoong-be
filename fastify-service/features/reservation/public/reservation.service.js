@@ -1,12 +1,12 @@
 import db from "../../../config/db.js";
 
 export async function getAllReservations() {
-    return db('user_reservation').select(['id', 'user_id', 'nama as title', 'email', 'observasi_mulai as start', 'observasi_selesai as end', 'deskripsi as desc']);
+    return db('user_reservation').select(['id', 'user_id', 'nama as title', 'email', 'observasi_mulai as start', 'observasi_selesai as end', 'deskripsi as desc', 'status']).orderBy('id', 'asc');
 }
 
 export async function getReservationByUser(username) {
     const user_id = await db('users').where({ username: username }).first().select('id');
-    return db('user_reservation').select(['id', 'user_id', 'nama as title', 'email', 'observasi_mulai as start', 'observasi_selesai as end', 'deskripsi as desc']).where({ user_id: user_id.id });
+    return db('user_reservation').select(['id', 'user_id', 'nama as title', 'email', 'observasi_mulai as start', 'observasi_selesai as end', 'deskripsi as desc', 'status']).where({ user_id: user_id.id });
 }
 
 export async function createReservation(reservation) {

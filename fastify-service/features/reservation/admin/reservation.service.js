@@ -1,7 +1,9 @@
 import db from "../../../config/db.js";
 
 export async function getAllReservations() {
-    return db('user_reservation').select(['id', 'user_id', 'nama as title', 'email', 'observasi_mulai as start', 'observasi_selesai as end', 'status', 'deskripsi as desc']);
+    return db('user_reservation')
+        .select(['id', 'user_id', 'nama as title', 'email', 'observasi_mulai as start', 'observasi_selesai as end', 'status', 'deskripsi as desc'])
+        .orderBy('id', 'asc');
 }
 
 export async function getReservationByUser(username) {

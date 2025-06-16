@@ -22,8 +22,8 @@ export async function createUserHandler(req, reply) {
 export async function editUserHandler(req, reply) {
     try {
         const id = req.params.id;
-        const { username, role } = req.body;
-        await editUser(id, username, role);
+        const { username, role, disable } = req.body;
+        await editUser(id, username, role, disable);
         reply.send({ message: 'User edited' });
     } catch (err) {
         reply.code(500).send({ error: err.message });
