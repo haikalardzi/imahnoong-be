@@ -1,4 +1,3 @@
-import bcrypt from "bcryptjs";
 import { getAllReservations, getReservationByUser, createReservation } from "./reservation.service.js";
 
 export async function fetchAllReservation(req, reply) {

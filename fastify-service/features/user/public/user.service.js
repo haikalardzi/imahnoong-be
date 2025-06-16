@@ -1,4 +1,4 @@
-import db from '../../config/db.js';
+import db from '../../../config/db.js';
 import bcrypt from 'bcryptjs';
 
 export async function createUser(username, password) {

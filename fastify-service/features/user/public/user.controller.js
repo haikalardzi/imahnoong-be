@@ -1,4 +1,4 @@
-import { createUser, findUserByUsername, verifyPassword } from './auth.service.js';
+import { createUser, findUserByUsername, verifyPassword } from './user.service.js';
 
 export async function registerHandler(req, reply) {
   try {

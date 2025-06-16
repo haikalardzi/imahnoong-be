@@ -1,10 +1,12 @@
 //set all routes here
 // import { stellariumMetadataHandler } from "../features/api/Stellarium/stellarium.controller.js";
 // import { nasaMetadataHandler } from "../features/api/NASA/nasa.controller.js";
-import { loginHandler, registerHandler } from "../features/user/auth.controller.js";
+import { loginHandler, registerHandler } from "../features/user/public/user.controller.js";
 import { getPlanetaryDataHandler } from "../features/api/AstronomyAPI/astronomy.controller.js";
 import { getCurrentObjectHandler, updateCurrentObjectHandler, cacheAstroAPIHandler, getAstroAPIHandler } from "../features/telescope-control/currentObject.controller.js";
-import { fetchAllReservation, fetchUserReservation, makeReservation } from "../features/reservation/reservation.controller.js";
+import { fetchAllReservation, fetchUserReservation, makeReservation } from "../features/reservation/public/reservation.controller.js";
+import { createUserHandler, deleteUserHandler, editUserHandler, getAllUsersHandler } from "../features/user/admin/user.controller.js";
+import { getAllReservationHandler, getReservationByUserHandler, createReservationHandler, editReservationStatusHandler, deleteReservationHandler } from "../features/reservation/admin/reservation.controller.js";
 
 /**
  * 
@@ -32,4 +34,21 @@ export default async function webRoutes(fastify) {
         routes.get('/astronomy-api/planetary', getPlanetaryDataHandler);
         routes.get ('/astronomy-api/planetary/:id', getPlanetaryDataHandler);
     }, { prefix: '/api' });
+
+    //Admin Service
+    fastify.register(async function (routes) {
+        
+        //User
+        routes.get('/users', { preHandler: [fastify.requireAdmin] }, getAllUsersHandler);
+        routes.post('/users', { preHandler: [fastify.requireAdmin] }, createUserHandler);
+        routes.put('/users/:id', { preHandler: [fastify.requireAdmin] }, editUserHandler);
+        routes.delete('/users/:id', { preHandler: [fastify.requireAdmin] }, deleteUserHandler);
+
+        //Reservation
+        routes.get('/reservations', { preHandler: [fastify.requireAdmin] }, getAllReservationHandler);
+        routes.get('/reservations/:username', { preHandler: [fastify.requireAdmin] }, getReservationByUserHandler);
+        routes.post('/reservations', { preHandler: [fastify.requireAdmin] }, createReservationHandler);
+        routes.put('/reservations/:id', { preHandler: [fastify.requireAdmin] }, editReservationStatusHandler);
+        routes.delete('/reservations/:id', { preHandler: [fastify.requireAdmin] }, deleteReservationHandler);
+    }, { prefix: '/admin' });
 }

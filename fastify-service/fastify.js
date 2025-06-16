@@ -33,12 +33,12 @@ async function buildApp() {
   await webRoutes(app);
   
   // --- Server start ---
-  const server = await app.listen({ port: PORT, host: HOST });
+  await app.listen({ port: PORT, host: HOST })
+    .then((server) => console.log(`✅ Fastify listening on ${server}`))
+    .catch((err) => console.error(err));
   
   // --- Feature registration Websocket ---
   // await registerTelescopeStream(io); // route: /stream
-
-  console.log(`✅ Fastify listening on http://${HOST}:${PORT}`);
   console.log(`telescope latitude: ${TELESCOPE_LATITUDE}, longitude: ${TELESCOPE_LONGITUDE}`);
 
   return app;
