@@ -10,7 +10,7 @@ import { parseIP } from '../helper/byteParser.js';
 export function registerControlEndpoint(app, onCommand) {
   app.ws('/control', {
     open: (ws) => {
-      console.log(parseIP(ws.getRemoteAddress()) + ' connected to /control');
+      console.log('Connected to /control');
     },
     message: (ws, message, isBinary) => {
       if (!isBinary) {

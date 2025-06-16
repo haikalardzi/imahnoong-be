@@ -12,7 +12,7 @@ export function registerStreamEndpoint(app, clients = new Set()) {
   app.ws('/stream', {
     open: (ws) => {
       clients.add(ws);
-      console.log(parseIP(ws.getRemoteAddress()) + ' connected to /stream');
+      console.log('Connected to /stream');
       console.log('Number of clients: ' + clients.size);
       ws.subscribe('stream');
     },
