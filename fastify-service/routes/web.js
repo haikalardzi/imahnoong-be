@@ -4,9 +4,10 @@
 import { loginHandler, registerHandler } from "../features/user/public/user.controller.js";
 import { getPlanetaryDataHandler } from "../features/api/AstronomyAPI/astronomy.controller.js";
 import { getCurrentObjectHandler, updateCurrentObjectHandler, cacheAstroAPIHandler, getAstroAPIHandler } from "../features/telescope-control/currentObject.controller.js";
-import { fetchAllReservation, fetchUserReservation, makeReservation } from "../features/reservation/public/reservation.controller.js";
+import { checkControl, fetchAllReservation, fetchUserReservation, makeReservation } from "../features/reservation/public/reservation.controller.js";
 import { createUserHandler, deleteUserHandler, editUserHandler, getAllUsersHandler } from "../features/user/admin/user.controller.js";
 import { getAllReservationHandler, getReservationByUserHandler, createReservationHandler, editReservationStatusHandler, deleteReservationHandler } from "../features/reservation/admin/reservation.controller.js";
+import { viewerCount } from "../features/telescope-stream/viewer.js";
 
 /**
  * 
@@ -21,7 +22,9 @@ export default async function webRoutes(fastify) {
     fastify.get('/get-api-data', getAstroAPIHandler);
     fastify.post('/update-current-object', { preHandler: [fastify.authenticate] }, updateCurrentObjectHandler);
     fastify.post('/cache-api-data', { preHandler: [fastify.authenticate] }, cacheAstroAPIHandler);
-    
+
+    fastify.get('/auth/ws-control', { preHandler: [fastify.authenticate] }, checkControl);
+
     //Reservation
     fastify.get('/reservations', { preHandler: [fastify.authenticate] }, fetchAllReservation);
     fastify.get('/reservations/:username', { preHandler: [fastify.authenticate] }, fetchUserReservation);
@@ -50,5 +53,8 @@ export default async function webRoutes(fastify) {
         routes.post('/reservations', { preHandler: [fastify.requireAdmin] }, createReservationHandler);
         routes.put('/reservations/:id', { preHandler: [fastify.requireAdmin] }, editReservationStatusHandler);
         routes.delete('/reservations/:id', { preHandler: [fastify.requireAdmin] }, deleteReservationHandler);
+
+        //Stream
+        routes.get('/viewers', { preHandler: [] }, viewerCount);
     }, { prefix: '/admin' });
 }

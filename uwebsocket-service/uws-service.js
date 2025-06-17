@@ -17,7 +17,7 @@ export function startWebSocketServer(host = HOST, port = PORT) {
     const time = Date.now();
     const interval = time - command.timestamp;
     console.log('Interval: ' + interval / 1000 + 's');
-    // You can forward this to IoT backend or device controller
+    // TODO: You can forward this to IoT backend or device controller
   });
 
   app.listen(host, port, (token) => {

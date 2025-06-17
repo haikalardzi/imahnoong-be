@@ -15,3 +15,17 @@ export async function createReservation(reservation) {
     const observasi_selesai = new Date(reservation.date + ' ' + reservation.end).toISOString();
     return db('user_reservation').insert({ user_id: user.id, observasi_mulai, observasi_selesai, nama: reservation.name, email: reservation.email, deskripsi: reservation.description });
 }
+
+export async function checkApprovedReservationNow(userId) {
+  const now = new Date().toISOString();
+
+  const result = await db('user_reservation')
+    .where('user_id', userId)
+    .andWhere('status', 'approved')
+    .andWhere('observasi_mulai', '<=', now)
+    .andWhere('observasi_selesai', '>=', now)
+    .andWhere('disable', false)
+    .first();
+
+  return !!result;
+}

@@ -1,7 +1,7 @@
 import Fastify from 'fastify';
 import FastifyCors from '@fastify/cors';
 import FastifyJwt from '@fastify/jwt';
-
+import FastifyRateLimit from '@fastify/rate-limit';
 // import { Server } from 'socket.io';
 
 // imports
@@ -24,6 +24,10 @@ async function buildApp() {
   // --- Plugin Registration ---
   app.register(FastifyJwt, { secret: process.env.JWT_SECRET || 'your_strong_secret' });
   app.register(FastifyCors, corsOptions);
+  app.register(FastifyRateLimit, {
+    max: 100,
+    timeWindow: '1 minute',
+  });
   
   // --- Middleware Decorate ---
   app.decorate('authenticate', authenticate);
@@ -41,8 +45,6 @@ async function buildApp() {
     .then((server) => console.log(`✅ Fastify listening on ${server}`))
     .catch((err) => console.error(err));
   
-  // --- Feature registration Websocket ---
-  // await registerTelescopeStream(io); // route: /stream
   console.log(`telescope latitude: ${TELESCOPE_LATITUDE}, longitude: ${TELESCOPE_LONGITUDE}`);
 
   return app;
