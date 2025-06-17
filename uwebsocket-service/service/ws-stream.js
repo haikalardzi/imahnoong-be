@@ -1,10 +1,8 @@
-import uWS from 'uWebSockets.js'
-import { parseIP } from "../helper/byteParser.js";
-import { viewer } from '../../viewer.js';
-import jwt from 'jsonwebtoken';
-
-const SECRET = process.env.JWT_SECRET || 'your_strong_secret';
 // ws-stream.js
+import uWS from 'uWebSockets.js'
+import { viewer } from '../../utils/viewer.js';
+import jwt from 'jsonwebtoken';
+import { JWT_SECRET } from '../../helper/constant.js';
 /**
  * 
  * @param {uWS.TemplatedApp} app 
@@ -22,7 +20,7 @@ export function registerStreamEndpoint(app, clients = new Set()) {
 
       if (token !== "null") {
         console.log(token);
-        user = jwt.verify(token, SECRET); // Throws if invalid
+        user = jwt.verify(token, JWT_SECRET); // Throws if invalid
         console.log(user);
       }
       viewer.push(user.username);

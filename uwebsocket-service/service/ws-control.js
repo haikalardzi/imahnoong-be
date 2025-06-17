@@ -2,8 +2,7 @@
 import uWS from 'uWebSockets.js';
 import jwt from 'jsonwebtoken';
 import { checkApprovedReservationNow } from '../../fastify-service/features/reservation/public/reservation.service.js';
-
-const SECRET = process.env.JWT_SECRET || 'your_strong_secret';
+import { JWT_SECRET } from '../../helper/constant.js';
 /**
  * 
  * @param {uWS.TemplatedApp} app 
@@ -21,7 +20,7 @@ export function registerControlEndpoint(app, onCommand) {
 
       try {
         let isAllowed = false;
-        const user = jwt.verify(token, SECRET); // Throws if invalid
+        const user = jwt.verify(token, JWT_SECRET); // Throws if invalid
 
         checkApprovedReservationNow(user.id)
           .then((res) => {

@@ -1,6 +1,9 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import './fastify-service/fastify.js';
-import './uwebsocket-service/uwebsocket.js';
+import startFastifyServer from './fastify-service/fastify.js';
+import startUWebSocketServer from './uwebsocket-service/uwebsocket.js';
 // import './socketio/socketio.js';
+
+startFastifyServer();
+startUWebSocketServer();

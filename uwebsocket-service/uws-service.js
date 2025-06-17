@@ -3,11 +3,14 @@ import uWS from 'uWebSockets.js';
 import { registerStreamEndpoint } from './service/ws-stream.js';
 import { registerControlEndpoint } from './service/ws-control.js';
 
-const PORT = process.env.WS_PORT || 9005;
-const HOST = process.env.WS_HOST || '0.0.0.0';
 const clients = new Set();
 
-export function startWebSocketServer(host = HOST, port = PORT) {
+/**
+ * @param {string} host 
+ * @param {number} port 
+ * @returns
+ */
+export function startWebSocketServer(host, port) {
   const app = uWS.App();
 
   const { broadcast } = registerStreamEndpoint(app, clients);
@@ -28,5 +31,5 @@ export function startWebSocketServer(host = HOST, port = PORT) {
     }
   });
 
-  return { broadcast };
+  return broadcast;
 }

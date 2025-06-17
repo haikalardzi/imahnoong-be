@@ -13,7 +13,7 @@ import { viewerCount } from "../features/telescope-stream/viewer.js";
  * 
  * @param {import("fastify").FastifyInstance} fastify 
  */
-export default async function webRoutes(fastify) {
+export default function webRoutes(fastify) {
     fastify.get('/', (request, reply) => reply.send('hello world!'));
     fastify.post('/register', registerHandler);
     fastify.post('/login', loginHandler);
@@ -31,7 +31,7 @@ export default async function webRoutes(fastify) {
     fastify.post('/reservations', { preHandler: [fastify.authenticate] }, makeReservation);
 
     //API External
-    fastify.register(async function (routes) {
+    fastify.register(function (routes) {
         // routes.get('/stellarium/object', stellariumMetadataHandler);
         // routes.get('/nasa/object', nasaMetadataHandler);
         routes.get('/astronomy-api/planetary', getPlanetaryDataHandler);
@@ -39,7 +39,7 @@ export default async function webRoutes(fastify) {
     }, { prefix: '/api' });
 
     //Admin Service
-    fastify.register(async function (routes) {
+    fastify.register(function (routes) {
         
         //User
         routes.get('/users', { preHandler: [fastify.requireAdmin] }, getAllUsersHandler);
@@ -55,6 +55,6 @@ export default async function webRoutes(fastify) {
         routes.delete('/reservations/:id', { preHandler: [fastify.requireAdmin] }, deleteReservationHandler);
 
         //Stream
-        routes.get('/viewers', { preHandler: [] }, viewerCount);
+        routes.get('/viewers', { preHandler: [fastify.requireAdmin] }, viewerCount);
     }, { prefix: '/admin' });
 }

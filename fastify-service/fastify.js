@@ -11,8 +11,10 @@ import corsOptions from './config/cors.js';
 
 // HTTP routes imports
 import webRoutes from './routes/web.js';
+import { JWT_SECRET } from '../helper/constant.js';
 
-async function buildApp() {
+
+export default function startFastifyServer() {
   const TELESCOPE_LATITUDE = parseFloat(process.env.TELESCOPE_LATITUDE);
   const TELESCOPE_LONGITUDE = parseFloat(process.env.TELESCOPE_LONGITUDE);
 
@@ -22,7 +24,7 @@ async function buildApp() {
   const app = Fastify();
 
   // --- Plugin Registration ---
-  app.register(FastifyJwt, { secret: process.env.JWT_SECRET || 'your_strong_secret' });
+  app.register(FastifyJwt, { secret: JWT_SECRET });
   app.register(FastifyCors, corsOptions);
   app.register(FastifyRateLimit, {
     max: 100,
@@ -38,10 +40,10 @@ async function buildApp() {
   });
   
   // --- Route registration ---
-  await webRoutes(app);
+  webRoutes(app);
   
   // --- Server start ---
-  await app.listen({ port: PORT, host: HOST })
+  app.listen({ port: PORT, host: HOST })
     .then((server) => console.log(`✅ Fastify listening on ${server}`))
     .catch((err) => console.error(err));
   
@@ -49,5 +51,3 @@ async function buildApp() {
 
   return app;
 }
-
-await buildApp();
