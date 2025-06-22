@@ -8,6 +8,7 @@ import { checkControl, fetchAllReservation, fetchUserReservation, makeReservatio
 import { createUserHandler, deleteUserHandler, editUserHandler, getAllUsersHandler } from "../features/user/admin/user.controller.js";
 import { getAllReservationHandler, getReservationByUserHandler, createReservationHandler, editReservationStatusHandler, deleteReservationHandler } from "../features/reservation/admin/reservation.controller.js";
 import { viewerCount } from "../features/telescope-stream/viewer.js";
+import { saveRecordHandler } from "../features/observation-records/public/records-controller.js";
 
 /**
  * 
@@ -29,6 +30,9 @@ export default function webRoutes(fastify) {
     fastify.get('/reservations', { preHandler: [fastify.authenticate] }, fetchAllReservation);
     fastify.get('/reservations/:username', { preHandler: [fastify.authenticate] }, fetchUserReservation);
     fastify.post('/reservations', { preHandler: [fastify.authenticate] }, makeReservation);
+
+    //Observation Records
+    fastify.post('/save-record', { preHandler: [fastify.authenticate] }, saveRecordHandler);
 
     //API External
     fastify.register(function (routes) {

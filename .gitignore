@@ -6,6 +6,10 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+fastify-service/cert
+uwebsocket-service/cert
+fastify-service/uploads/*
+!/fastify-service/uploads/.gitkeep
 
 .env
 node_modules
