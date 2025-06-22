@@ -34,9 +34,9 @@ export default function startFastifyServer() {
   app.register(FastifyMultipart, {
     limits: {
       fieldNameSize: 100,
-      fieldSize: 1000000,
+      fieldSize: 10 * 1024 * 1024,
       fields: 10,
-      fileSize: 5000000,
+      fileSize: 5 * 1024 * 1024,
       files: 1,
       headerPairs: 2000
     },

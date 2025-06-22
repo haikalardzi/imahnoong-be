@@ -33,3 +33,7 @@ export async function saveMetadata(username, filename, data) {
         description: data.description || null
     });
 }
+
+export async function getRecordsByUser(username) {
+    return await db('observation_records').where({ username }).orderBy('datetime', 'desc');
+}

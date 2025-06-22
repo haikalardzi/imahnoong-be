@@ -1,4 +1,4 @@
-import { saveMetadata, saveFile } from './records-service.js';
+import { saveMetadata, saveFile, getRecordsByUser } from './records-service.js';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -15,11 +15,12 @@ export async function saveRecordHandler(req, reply) {
 
         if (!file) return reply.code(400).send({ error: 'Missing file' });
         
-        const username = req.user.username;
+        const username = req.user.username.replace(/[^a-zA-Z0-9_-]/g, '');
+
         const ext = path.extname(file.filename); // e.g. ".jpg", ".png", etc.
         const filename = `${uuidv4()}${ext}`; 
         const result = await saveMetadata(username, filename, metadata);
-        console.log(result);
+
         if (!result) return reply.code(500).send({ error: 'Failed to save metadata' });
         
         await saveFile(username, file, filename);
@@ -28,6 +29,15 @@ export async function saveRecordHandler(req, reply) {
             filename,
             path: `/uploads/${req.user.username}/${filename}`,
         });
+    } catch (err) {
+        reply.code(500).send({ error: err.message });
+    }
+}
+
+export async function fetchRecordsByUser(req, reply) {
+    try{
+        const data = await getRecordsByUser(req.user.username);
+        reply.send(data);
     } catch (err) {
         reply.code(500).send({ error: err.message });
     }
