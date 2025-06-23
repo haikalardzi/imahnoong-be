@@ -1,16 +1,12 @@
 import fs from 'fs';
-import { fileURLToPath } from 'url';
 import path from 'path';
 import db from '../../../config/db.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { fastifyUploadRoot } from '../../../../helper/constant.js';
 
 export async function saveFile(username, file, filename) {
     if (!file) return reply.code(400).send({ error: 'Missing file' });
 
-    const uploadRoot = path.resolve(__dirname, '../../../uploads');
-    const userDir = path.join(uploadRoot, username);
+    const userDir = path.join(fastifyUploadRoot, username);
 
     if (!fs.existsSync(userDir)) fs.mkdirSync(userDir, { recursive: true });
     const savePath = path.join(userDir, filename);
@@ -19,6 +15,7 @@ export async function saveFile(username, file, filename) {
 }
 
 export async function saveMetadata(username, filename, data) {
+    // return 1;
     return await db('observation_records').insert({
         username: username, 
         filename: filename,
@@ -35,5 +32,13 @@ export async function saveMetadata(username, filename, data) {
 }
 
 export async function getRecordsByUser(username) {
-    return await db('observation_records').where({ username }).orderBy('datetime', 'desc');
+    return await db('observation_records').where({ username, is_deleted: false }).orderBy('datetime', 'desc');
+}
+
+export async function getLast6Records() {
+    return await db('observation_records').where({ is_deleted: false }).orderBy('datetime', 'desc').limit(6);
+}
+
+export async function getRecord(id) {
+    return await db('observation_records').where({ id: id, is_deleted: false }).first();
 }

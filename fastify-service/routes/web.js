@@ -8,7 +8,8 @@ import { checkControl, fetchAllReservation, fetchUserReservation, makeReservatio
 import { createUserHandler, deleteUserHandler, editUserHandler, getAllUsersHandler } from "../features/user/admin/user.controller.js";
 import { getAllReservationHandler, getReservationByUserHandler, createReservationHandler, editReservationStatusHandler, deleteReservationHandler } from "../features/reservation/admin/reservation.controller.js";
 import { viewerCount } from "../features/telescope-stream/viewer.js";
-import { fetchRecordsByUser, saveRecordHandler } from "../features/observation-records/public/records-controller.js";
+import { fetchLatestRecords, fetchRecord, fetchRecordsByUser, saveRecordHandler } from "../features/observation-records/public/records.controller.js";
+import { deleteRecordHandler, fetchAllRecordsHandler } from "../features/observation-records/admin/records.controller.js";
 
 /**
  * 
@@ -32,6 +33,8 @@ export default function webRoutes(fastify) {
     fastify.post('/reservations', { preHandler: [fastify.authenticate] }, makeReservation);
 
     //Observation Records
+    fastify.get('/records/latest', fetchLatestRecords);
+    fastify.get('/records/:id', { preHandler: [fastify.authenticate] }, fetchRecord);
     fastify.get('/records', { preHandler: [fastify.authenticate] }, fetchRecordsByUser);
     fastify.post('/records', { preHandler: [fastify.authenticate] }, saveRecordHandler);
 
@@ -63,5 +66,7 @@ export default function webRoutes(fastify) {
         routes.get('/viewers', { preHandler: [fastify.requireAdmin] }, viewerCount);
 
         //Observation Records
+        routes.get('/records', { preHandler: [fastify.requireAdmin] }, fetchAllRecordsHandler);
+        routes.delete('/records/:id', { preHandler: [fastify.requireAdmin] }, deleteRecordHandler);
     }, { prefix: '/admin' });
 }

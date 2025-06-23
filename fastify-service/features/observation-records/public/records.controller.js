@@ -1,6 +1,7 @@
-import { saveMetadata, saveFile, getRecordsByUser } from './records-service.js';
+import { saveMetadata, saveFile, getRecordsByUser, getLast6Records, getRecord } from './records.service.js';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import { FASTIFY_URL } from '../../../../helper/constant.js';
 
 /**
  * 
@@ -27,7 +28,7 @@ export async function saveRecordHandler(req, reply) {
         reply.send({
             status: 'ok',
             filename,
-            path: `/uploads/${req.user.username}/${filename}`,
+            path: `/files/${req.user.username}/${filename}`,
         });
     } catch (err) {
         reply.code(500).send({ error: err.message });
@@ -37,6 +38,31 @@ export async function saveRecordHandler(req, reply) {
 export async function fetchRecordsByUser(req, reply) {
     try{
         const data = await getRecordsByUser(req.user.username);
+        for (let i = 0; i < data.length; i++) {
+            data[i].url = `${FASTIFY_URL}/files/${data[i].username}/${data[i].filename}`;   
+        }
+        reply.send(data);
+    } catch (err) {
+        reply.code(500).send({ error: err.message });
+    }
+}
+
+export async function fetchLatestRecords(req, reply) {
+    try{
+        const data = await getLast6Records();
+        for (let i = 0; i < data.length; i++) {
+            data[i].url = `${FASTIFY_URL}/files/${data[i].username}/${data[i].filename}`;   
+        }
+        reply.send(data);
+    } catch (err) {
+        reply.code(500).send({ error: err.message });
+    }
+}
+
+export async function fetchRecord(req, reply) {
+    try{
+        const data = await getRecord(req.params.id);
+        data.url = `${FASTIFY_URL}/files/${data.username}/${data.filename}`;
         reply.send(data);
     } catch (err) {
         reply.code(500).send({ error: err.message });

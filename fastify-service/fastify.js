@@ -6,19 +6,13 @@ import FastifyRateLimit from '@fastify/rate-limit';
 import FastifyMultipart from '@fastify/multipart';
 // import { Server } from 'socket.io';
 
-import path from 'path';
-import { fileURLToPath } from 'url';
-
 // imports
 import authenticate from './middleware/authenticate.js';
 import requireAdmin from './middleware/requireAdmin.js';
 import corsOptions from './config/cors.js';
 // HTTP routes imports
 import webRoutes from './routes/web.js';
-import { JWT_SECRET } from '../helper/constant.js';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { JWT_SECRET, fastifyUploadRoot } from '../helper/constant.js';
 
 export default function startFastifyServer() {
   const TELESCOPE_LATITUDE = parseFloat(process.env.TELESCOPE_LATITUDE);
@@ -44,7 +38,7 @@ export default function startFastifyServer() {
   });
 
   app.register(FastifyStatic, {
-    root: path.join(__dirname, 'uploads'), // ✅ absolute path to ./public
+    root: fastifyUploadRoot, // ✅ absolute path to ./public
     prefix: '/files/',                   // URL prefix
   });
 
