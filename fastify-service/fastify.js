@@ -1,18 +1,20 @@
+import fs from 'fs';
+
 import Fastify from 'fastify';
 import FastifyJwt from '@fastify/jwt';
 import FastifyCors from '@fastify/cors';
 import FastifyStatic from '@fastify/static';
 import FastifyRateLimit from '@fastify/rate-limit';
 import FastifyMultipart from '@fastify/multipart';
+import FastifyCookie from '@fastify/cookie';
 // import { Server } from 'socket.io';
 
 // imports
 import authenticate from './middleware/authenticate.js';
 import requireAdmin from './middleware/requireAdmin.js';
-import corsOptions from './config/cors.js';
 // HTTP routes imports
 import webRoutes from './routes/web.js';
-import { JWT_SECRET, fastifyUploadRoot } from '../helper/constant.js';
+import { FE_URL, JWT_SECRET, fastifyUploadRoot } from '../helper/constant.js';
 
 export default function startFastifyServer() {
   const TELESCOPE_LATITUDE = parseFloat(process.env.TELESCOPE_LATITUDE);
@@ -21,10 +23,25 @@ export default function startFastifyServer() {
   const PORT = process.env.SERVER_PORT || 9004;
   const HOST = process.env.SERVER_HOST || '0.0.0.0';
 
-  const app = Fastify();
+  const app = Fastify({
+    https: {
+      key: fs.readFileSync(process.env.SSL_KEY),
+      cert: fs.readFileSync(process.env.SSL_CERT)
+    }
+  });
   // --- Plugin Registration ---
-  app.register(FastifyJwt, { secret: JWT_SECRET });
-  app.register(FastifyCors, corsOptions);
+  app.register(FastifyCookie);
+  app.register(FastifyJwt, { 
+    secret: JWT_SECRET,
+    cookie: {
+      cookieName: 'refreshToken',
+      signed: false
+    }
+  });
+  app.register(FastifyCors, {
+    origin: ['http://localhost:5173', FE_URL], // Your React app URLs
+    credentials: true, // ✅ This is crucial for cookies!
+  });  
   app.register(FastifyMultipart, {
     limits: {
       fieldNameSize: 100,

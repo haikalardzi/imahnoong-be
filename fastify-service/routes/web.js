@@ -1,7 +1,7 @@
 //set all routes here
 // import { stellariumMetadataHandler } from "../features/api/Stellarium/stellarium.controller.js";
 // import { nasaMetadataHandler } from "../features/api/NASA/nasa.controller.js";
-import { loginHandler, registerHandler } from "../features/user/public/user.controller.js";
+import { loginHandler, logoutHandler, refreshTokenHandler, registerHandler } from "../features/user/public/user.controller.js";
 import { getPlanetaryDataHandler } from "../features/api/AstronomyAPI/astronomy.controller.js";
 import { getCurrentObjectHandler, updateCurrentObjectHandler, cacheAstroAPIHandler, getAstroAPIHandler } from "../features/telescope-control/currentObject.controller.js";
 import { checkControl, fetchAllReservation, fetchUserReservation, makeReservation } from "../features/reservation/public/reservation.controller.js";
@@ -19,6 +19,8 @@ export default function webRoutes(fastify) {
     fastify.get('/', (request, reply) => reply.send('hello world!'));
     fastify.post('/register', registerHandler);
     fastify.post('/login', loginHandler);
+    fastify.post('/logout', logoutHandler);
+    fastify.post('/refresh', { preHandler: [fastify.authenticate] }, refreshTokenHandler);
     
     fastify.get('/current-object', getCurrentObjectHandler);
     fastify.get('/get-api-data', getAstroAPIHandler);

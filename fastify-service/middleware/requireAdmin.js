@@ -1,6 +1,6 @@
 export default async function requireAdmin(request, reply) {
   try {
-    await request.jwtVerify();
+    await request.jwtVerify({ onlyCookie: true });
     
     if (request.user.role !== 'admin') {
       reply.code(403).send({ 
