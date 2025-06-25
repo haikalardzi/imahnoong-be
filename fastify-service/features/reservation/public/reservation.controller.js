@@ -28,11 +28,10 @@ export async function makeReservation(req, reply) {
 }
 
 export async function checkControl (req, reply) {
-    console.log(req.user);
     const isAllowed = await checkApprovedReservationNow(req.user.id);
     if (!isAllowed && req.user.role !== 'admin') {
         return reply.code(403).send({ error: 'Not in control time window' });
     }
 
-    return { allowed: isAllowed };
+    return { allowed: true };
 }

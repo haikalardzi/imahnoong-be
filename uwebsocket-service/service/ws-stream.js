@@ -19,9 +19,7 @@ export function registerStreamEndpoint(app, clients = new Set()) {
       };
 
       if (token !== "null") {
-        console.log(token);
         user = jwt.verify(token, JWT_SECRET); // Throws if invalid
-        console.log(user);
       }
       viewer.push(user.username);
 

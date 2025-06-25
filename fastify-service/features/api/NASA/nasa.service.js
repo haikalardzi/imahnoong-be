@@ -13,7 +13,6 @@ export async function getNasaObjectMetadata(name) {
 
     const rateLimitLimit = res.headers.get('X-RateLimit-Limit');
     const rateLimitRemaining = res.headers.get('X-RateLimit-Remaining');
-    console.log(`Rate limit: ${rateLimitLimit}, remaining: ${rateLimitRemaining}`);
 
     const data = await res.json();
     return data;
