@@ -1,6 +1,6 @@
 import { spawn } from 'child_process';
 
-export function startFFmpeg(onData) {
+export function startFFmpeg(sendChunk) {
   const ffmpeg = spawn('ffmpeg', [
     '-f', 'dshow',
     '-i', 'video=Integrated Camera',
@@ -11,7 +11,7 @@ export function startFFmpeg(onData) {
     'pipe:1'
   ]);
 
-  ffmpeg.stdout.on('data', onData);
+  ffmpeg.stdout.on('data', sendChunk);
 
   ffmpeg.stderr.on('data', (data) => {
     // Uncomment if needed

@@ -1,1 +1,1 @@
-export const viewer = [];
+export const viewer = new Set();

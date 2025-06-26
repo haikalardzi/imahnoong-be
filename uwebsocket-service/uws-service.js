@@ -13,14 +13,14 @@ const clients = new Set();
 export function startWebSocketServer(host, port) {
   const app = uWS.App();
 
-  const { broadcast } = registerStreamEndpoint(app, clients);
+  const broadcast = registerStreamEndpoint(app, clients);
 
   registerControlEndpoint(app, (command) => {
     // Handle command logic here
     const time = Date.now();
     const interval = time - command.timestamp;
     console.log('Interval: ' + interval / 1000 + 's');
-    // TODO: You can forward this to IoT backend or device controller
+    // TODO: @christo buat command di sini
   });
 
   app.listen(host, port, (token) => {

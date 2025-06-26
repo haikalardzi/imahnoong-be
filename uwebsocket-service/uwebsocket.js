@@ -7,7 +7,8 @@ export default function startUWebSocketServer() {
   
   const broadcast = startWebSocketServer(HOST, PORT);
   
-  startFFmpeg((chunk) => {
+  const sendChunk = (chunk) => {
     broadcast(chunk);
-  });
+  }
+  startFFmpeg(sendChunk);
 }
