@@ -2,6 +2,7 @@ import { saveMetadata, saveFile, getRecordsByUser, getLast6Records, getRecord } 
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { FASTIFY_URL } from '../../../../helper/constant.js';
+import { lastFrame } from '../../../../uwebsocket-service/uwebsocket.js';
 
 /**
  * 
@@ -10,25 +11,23 @@ import { FASTIFY_URL } from '../../../../helper/constant.js';
  */
 export async function saveRecordHandler(req, reply) {
     try{
-        const file = req.body.file;
-        const formData = await req.formData();
-        const metadata = JSON.parse(formData.get('metadata'));
-
-        if (!file) return reply.code(400).send({ error: 'Missing file' });
-        
+        const safeCopy = Buffer.from(lastFrame);
+        if (!(safeCopy[0] === 0xff && safeCopy[1] === 0xd8)) return reply.code(400).send({ error: 'Invalid JPEG file' });
+        const metadata = req.body;
+        const filename = uuidv4() + '.jpg';
         const username = req.user.username.replace(/[^a-zA-Z0-9_-]/g, '');
 
-        const ext = path.extname(file.filename); // e.g. ".jpg", ".png", etc.
-        const filename = `${uuidv4()}${ext}`; 
+        if (!safeCopy) return reply.code(400).send({ error: 'Camera is not connected' });
+        
         const result = await saveMetadata(username, filename, metadata);
 
         if (!result) return reply.code(500).send({ error: 'Failed to save metadata' });
         
-        await saveFile(username, file, filename);
+        await saveFile(username, safeCopy, filename);
         reply.send({
             status: 'ok',
-            filename,
-            path: `/files/${req.user.username}/${filename}`,
+            filename: filename,
+            path: `/files/${username}/${filename}`,
         });
     } catch (err) {
         reply.code(500).send({ error: err.message });

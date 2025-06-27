@@ -1,6 +1,6 @@
 // ws-stream.js
 import uWS from 'uWebSockets.js'
-import { viewer } from '../../utils/viewer.js';
+import { viewer } from '../../utils/objects.js';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../../helper/constant.js';
 function parseAddress(buffer) {

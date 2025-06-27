@@ -36,7 +36,7 @@ export function registerControlEndpoint(app, onCommand) {
           res.writeStatus('403 Forbidden').end();
           return;
         } else {
-          console.log(`username: ${user.username} connected to /control`);
+          console.log(`${user.username} connected to /control`);
         }
 
         res.upgrade(

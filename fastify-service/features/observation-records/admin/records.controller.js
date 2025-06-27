@@ -8,7 +8,7 @@ import { deleteRecord, getAllRecords } from './records.service.js';
  */
 export async function deleteRecordHandler(req, reply) {
     try {
-        const { id } = req.body;
+        const { id } = req.params;
         await deleteRecord(id);
         reply.send({ message: 'Record deleted' });
     } catch (err) {

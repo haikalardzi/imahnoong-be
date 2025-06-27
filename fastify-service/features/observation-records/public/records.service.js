@@ -11,7 +11,7 @@ export async function saveFile(username, file, filename) {
     if (!fs.existsSync(userDir)) fs.mkdirSync(userDir, { recursive: true });
     const savePath = path.join(userDir, filename);
 
-    await fs.promises.writeFile(savePath, await file.toBuffer());
+    await fs.promises.writeFile(savePath, file);
 }
 
 export async function saveMetadata(username, filename, data) {
@@ -24,7 +24,7 @@ export async function saveMetadata(username, filename, data) {
         distance: parseFloat(data.distance),
         constellation: data.constellation,
         declination: data.declination,
-        right_ascention: data.right_ascention,
+        right_ascension: data.right_ascension,
         altitude: data.altitude,
         azimuth: data.azimuth,
         description: data.description || null
@@ -32,11 +32,11 @@ export async function saveMetadata(username, filename, data) {
 }
 
 export async function getRecordsByUser(username) {
-    return await db('observation_records').where({ username, is_deleted: false }).orderBy('datetime', 'desc');
+    return await db('observation_records').where({ username, is_deleted: false }).orderBy('created_at', 'desc');
 }
 
 export async function getLast6Records() {
-    return await db('observation_records').where({ is_deleted: false }).orderBy('datetime', 'desc').limit(6);
+    return await db('observation_records').where({ is_deleted: false }).orderBy('created_at', 'desc').limit(6);
 }
 
 export async function getRecord(id) {
