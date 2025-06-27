@@ -27,6 +27,11 @@ export default function startFastifyServer() {
     https: {
       key: fs.readFileSync(process.env.SSL_KEY),
       cert: fs.readFileSync(process.env.SSL_CERT)
+    },
+    logger: {
+      transport: {
+        target: '@fastify/one-line-logger'
+      }
     }
   });
   // --- Plugin Registration ---
@@ -68,10 +73,6 @@ export default function startFastifyServer() {
   // --- Middleware Decorate ---
   app.decorate('authenticate', authenticate);
   app.decorate('requireAdmin', requireAdmin);
-
-  app.addHook('onRequest', async (request, reply) => {
-    console.log(`${request.method} ${reply.statusCode} ${request.url}`);
-  });
   
   // --- Route registration ---
   webRoutes(app);
