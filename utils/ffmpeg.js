@@ -1,20 +1,38 @@
 import { spawn } from 'child_process';
 
-export function startFFmpeg(sendChunk) {
+export function startFFmpeg(controlBroadcast, streamBroadcast) {
   const ffmpeg = spawn('ffmpeg', [
     '-f', 'dshow',
     '-i', 'video=Integrated Camera',
-    '-vf', 'scale=1280:720,fps=24',
-    '-f', 'image2pipe',
+
+    // Split input to two outputs
+    '-filter_complex', '[0:v]split=2[main][low];[main]scale=1280:720,fps=24[mjpeg];[low]scale=1280:720,fps=15[ts]',
+
+    // --- MJPEG for control ---
+    '-map', '[mjpeg]',
     '-q:v', '5',
     '-vcodec', 'mjpeg',
-    'pipe:1'
-  ]);
+    '-f', 'image2pipe',
+    'pipe:3',
 
-  ffmpeg.stdout.on('data', sendChunk);
+    // --- MPEGTS for viewers ---
+    '-map', '[ts]',
+    '-preset', 'ultrafast',
+    '-tune', 'zerolatency',
+    '-c:v', 'libx264',
+    '-f', 'mpegts',
+    'pipe:4',
+  ], {
+    stdio: ['ignore', 'pipe', 'pipe', 'pipe', 'pipe']
+  });
+
+  // MJPEG stream for controllers
+  ffmpeg.stdio[3]?.on('data', controlBroadcast);
+
+  // MPEGTS stream for viewers
+  ffmpeg.stdio[4]?.on('data', streamBroadcast);
 
   ffmpeg.stderr.on('data', (data) => {
-    // Uncomment if needed
     // console.error(`FFmpeg stderr: ${data}`);
   });
 

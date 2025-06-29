@@ -26,17 +26,25 @@ function parseAddress(buffer) {
  * @param {Set} clients 
  * @returns 
  */
-export function registerStreamEndpoint(app, clients = new Set()) {
-  app.ws('/stream', {
+export function registerStreamEndpoint(app, clients = new Set(), isControl = false) {
+  app.ws(isControl ? '/view-control' : '/stream', {
+    compression: 0,
+    maxPayloadLength: 16 * 1024 * 1024,
+    idleTimeout: 60,
     upgrade: (res, req, context) => {
-      const token = req.getHeader('sec-websocket-protocol');
+      const token = req.getHeader('cookie').replace('refreshToken=', '');
+      console.log(token);
       let user = {
         username: 'public',
         role: 'user'
       };
 
       if (token !== "null") {
-        user = jwt.verify(token, JWT_SECRET); // Throws if invalid
+        try{
+          user = jwt.verify(token, JWT_SECRET); // Throws if invalid
+        } catch (err) {
+          console.error(err);
+        }
       }
       res.upgrade(
         { user }, // pass user into ws object
@@ -72,9 +80,9 @@ export function registerStreamEndpoint(app, clients = new Set()) {
     const payload = Buffer.concat([timeBuffer, data]); // timestamp + image data
     for (const client of clients) {
       if (!client.closed) {
-        client.send(payload, true); // send as binary
+        client.send(isControl ? payload : data, true); // send as binary
       }
     }
   }
-  return broadcast;
+  return { broadcast };
 }

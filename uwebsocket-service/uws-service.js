@@ -3,7 +3,8 @@ import uWS from 'uWebSockets.js';
 import { registerStreamEndpoint } from './service/ws-stream.js';
 import { registerControlEndpoint } from './service/ws-control.js';
 
-const clients = new Set();
+const viewer = new Set();
+const control = new Set();
 
 /**
  * @param {string} host 
@@ -13,7 +14,8 @@ const clients = new Set();
 export function startWebSocketServer(host, port) {
   const app = uWS.App();
 
-  const broadcast = registerStreamEndpoint(app, clients);
+  const { broadcast: streamBroadcast } = registerStreamEndpoint(app, viewer, false);
+  const { broadcast: controlBroadcast } = registerStreamEndpoint(app, control, true);
 
   registerControlEndpoint(app, (command) => {
     // Handle command logic here
@@ -31,5 +33,5 @@ export function startWebSocketServer(host, port) {
     }
   });
 
-  return broadcast;
+  return { streamBroadcast, controlBroadcast };
 }
