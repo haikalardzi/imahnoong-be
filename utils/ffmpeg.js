@@ -2,8 +2,8 @@ import { spawn } from 'child_process';
 
 export function startFFmpeg(controlBroadcast, streamBroadcast) {
   const ffmpeg = spawn('ffmpeg', [
-    '-f', 'dshow',
-    '-i', 'video=Integrated Camera',
+    '-f', 'avfoundation', // 'dshow' = windows, 'avfoundation' = macos, linux = 'v4l2'
+    '-i', '0:', // 'video=Integrated Camera' = windows, '0:' = macos, '/dev/video0' = linux
 
     // Split input to two outputs
     '-filter_complex', '[0:v]split=2[main][low];[main]scale=1280:720,fps=24[mjpeg];[low]scale=1280:720,fps=15[ts]',
