@@ -23,9 +23,9 @@ export async function registerHandler(req, reply) {
 
     reply.setCookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: 'none',
-        path: '/',
+        // secure: true,
+        // sameSite: 'none',
+        // path: '/',
       })
       .send({ accessToken });
   } catch (err) {
@@ -55,9 +55,9 @@ export async function loginHandler(req, reply) {
     const refreshToken = req.server.jwt.sign({ id: user.id, username: user.username, role: user.role }, { expiresIn: '7d' });
     reply.setCookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      path: '/'
+      // secure: true,
+      // sameSite: 'none',
+      // path: '/'
     }).send({ accessToken });
   } catch (err) {
     // print now
@@ -75,9 +75,10 @@ export async function logoutHandler(req, reply) {
   try {
     reply.clearCookie('refreshToken', { 
       httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      path: '/' }).send({ message: 'Logged out' });
+      // secure: true,
+      // sameSite: 'none',
+      // path: '/' 
+    }).send({ message: 'Logged out' });
   } catch (err) {
     reply.code(500).send({ error: err.message });
   }

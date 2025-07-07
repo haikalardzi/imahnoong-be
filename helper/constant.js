@@ -10,7 +10,7 @@ export const fastifyUploadRoot = path.resolve(__dirname, '../fastify-service/upl
 
 export const JWT_SECRET = process.env.JWT_SECRET || 'your_strong_secret';
 
-export const FASTIFY_URL = `https://${process.env.SERVER_HOST}:${process.env.SERVER_PORT}` || 'http://localhost:9004';
+export const FASTIFY_URL = `http://${process.env.SERVER_HOST}:${process.env.SERVER_PORT}` || 'http://localhost:9004';
 
 export const WS_URL = `ws://${process.env.WS_HOST}:${process.env.WS_PORT}` || 'ws://localhost:9005';
 

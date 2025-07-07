@@ -24,10 +24,10 @@ export default function startFastifyServer() {
   const HOST = process.env.SERVER_HOST || '0.0.0.0';
 
   const app = Fastify({
-    https: {
-      key: fs.readFileSync(process.env.SSL_KEY),
-      cert: fs.readFileSync(process.env.SSL_CERT)
-    },
+    // https: {
+    //   key: fs.readFileSync(process.env.SSL_KEY),
+    //   cert: fs.readFileSync(process.env.SSL_CERT)
+    // },
     logger: {
       transport: {
         target: '@fastify/one-line-logger'
