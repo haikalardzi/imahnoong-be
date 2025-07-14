@@ -24,7 +24,7 @@ export async function checkApprovedReservationNow(userId) {
     .andWhere('status', 'approved')
     .andWhere('observasi_mulai', '<=', now)
     .andWhere('observasi_selesai', '>=', now)
-    // .andWhere('disable', false)
+    .andWhere('disable', false)
     .first();
 
   return !!result;

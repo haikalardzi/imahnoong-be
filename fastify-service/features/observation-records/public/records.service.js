@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import db from '../../../config/db.js';
 import { fastifyUploadRoot } from '../../../../helper/constant.js';
+import sharp from 'sharp';
 
 export async function saveFile(username, file, filename) {
     if (!file) return reply.code(400).send({ error: 'Missing file' });
@@ -10,8 +11,15 @@ export async function saveFile(username, file, filename) {
 
     if (!fs.existsSync(userDir)) fs.mkdirSync(userDir, { recursive: true });
     const savePath = path.join(userDir, filename);
+    const resized = await sharp(file)
+        .resize({
+            width: 1280,
+            height: 960,
+            fit: 'fill',
+        })
+        .toBuffer();
 
-    await fs.promises.writeFile(savePath, file);
+    await fs.promises.writeFile(savePath, resized);
 }
 
 export async function saveMetadata(username, filename, data) {

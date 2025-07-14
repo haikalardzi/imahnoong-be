@@ -1,0 +1,55 @@
+import UWS from 'uWebSockets.js';
+import { registerControllerEndpoint, registerControllerStreamEndpoint, timestamp } from './service/control.js';
+import { startFFmpeg } from '../utils/ffmpeg.js';
+import { registerViewerEndpoint } from './service/stream.js';
+
+export let lastFrame = null;
+
+const app = UWS.App();
+
+const controlClients = new Set();
+const streamClients = new Set();
+
+const ffmpeg = startFFmpeg();
+
+const raspiSockets = {
+  control: null,
+  stream: null
+}
+registerControllerEndpoint(app, raspiSockets);
+registerControllerStreamEndpoint(app, raspiSockets, ffmpeg, controlClients);
+registerViewerEndpoint(app, raspiSockets, ffmpeg, streamClients);
+
+if (!raspiSockets.control){
+  ffmpeg.stdio[3]?.on('data', (data) => {
+      lastFrame = data;
+      const timeBuffer = Buffer.alloc(8);
+      timeBuffer.writeBigUInt64BE(timestamp);
+      const payload = Buffer.concat([timeBuffer, data]);
+      for (const client of controlClients) {
+          if (!client.closed) client.send(payload, true);
+      }
+  });
+}
+
+if (!raspiSockets.stream) {
+    ffmpeg.stdio[4]?.on('data', (data) => {
+        for (const client of streamClients) {
+            if (!client.closed) client.send(data, true);
+        }
+    });
+}
+
+
+
+export function startWebSocketServer(){
+  const HOST = process.env.WS_HOST || 'localhost';
+  const PORT = process.env.WS_PORT || 9005;
+  app.listen(HOST, PORT, (token) => {
+      if (token) {
+          console.log(`✅ WebSocket listening on ws://${HOST}:${PORT}`);
+      } else {
+          console.error('❌ WebSocket server failed to start.');
+      }
+  });
+}

@@ -1,12 +1,16 @@
 import { spawn } from 'child_process';
 
-export function startFFmpeg(controlBroadcast, streamBroadcast) {
+export function startFFmpeg() {
   const ffmpeg = spawn('ffmpeg', [
-    '-f', 'avfoundation', // 'dshow' = windows, 'avfoundation' = macos, linux = 'v4l2'
-    '-i', '0:', // 'video=Integrated Camera' = windows, '0:' = macos, '/dev/video0' = linux
-
+    // input is MJPEG stream
+    '-f', 'image2pipe',
+    '-i', 'pipe:0',
+    
     // Split input to two outputs
-    '-filter_complex', '[0:v]split=2[main][low];[main]scale=1280:720,fps=24[mjpeg];[low]scale=1280:720,fps=15[ts]',
+    '-filter_complex', 
+    '[0:v]split=2[raw1][raw2];'+
+    '[raw1]scale=1280:500[mjpeg];'+
+    '[raw2]scale=1280:500[ts]',
 
     // --- MJPEG for control ---
     '-map', '[mjpeg]',
@@ -23,14 +27,8 @@ export function startFFmpeg(controlBroadcast, streamBroadcast) {
     '-f', 'mpegts',
     'pipe:4',
   ], {
-    stdio: ['ignore', 'pipe', 'pipe', 'pipe', 'pipe']
+    stdio: ['pipe', 'pipe', 'pipe', 'pipe', 'pipe']
   });
-
-  // MJPEG stream for controllers
-  ffmpeg.stdio[3]?.on('data', controlBroadcast);
-
-  // MPEGTS stream for viewers
-  ffmpeg.stdio[4]?.on('data', streamBroadcast);
 
   ffmpeg.stderr.on('data', (data) => {
     // console.error(`FFmpeg stderr: ${data}`);
