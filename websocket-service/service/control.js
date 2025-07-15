@@ -15,47 +15,59 @@ export let timestamp = 0;
 export function registerControllerEndpoint(app, raspiSockets){
     app.ws('/control', {
         upgrade: (res, req, context) => {
-            const token = req.getHeader('cookie').replace('refreshToken=', '');
-            if (!token) {
-                res.writeStatus('401 Unauthorized').end(
-                    JSON.stringify({
-                        error: 'Unauthorized',
-                    }),
-                    true
+            try{
+
+                const token = req.getHeader('cookie').replace('refreshToken=', '');
+                if (!token) {
+                    res.writeStatus('401 Unauthorized').end(
+                        JSON.stringify({
+                            error: 'Unauthorized',
+                        }),
+                        true
+                    );
+                    return;
+                }
+                const user = jwt.verify(token, JWT_SECRET); // Throws if invalid
+                if (user.role !== 'admin'){
+                    checkApprovedReservationNow(user.id).then((res) => {
+                        if (!res) {
+                            console.log(`403 User ${user.username} tried to connect outside allowed time`);
+                            res.writeStatus('403 Forbidden').end();
+                            return;
+                        } else {
+                            console.log(`200 User ${user.username} granted`);
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        res.writeStatus('401 Unauthorized')
+                            .end(
+                                JSON.stringify({
+                                    error: 'Unauthorized',
+                                }),
+                                true
+                            );
+                        return;
+                    });
+                }
+    
+                res.upgrade(
+                    { user }, // pass user into ws object
+                    req.getHeader('sec-websocket-key'),
+                    req.getHeader('sec-websocket-protocol'),
+                    req.getHeader('sec-websocket-extensions'),
+                    context
                 );
-                return;
+            } catch (err) {
+                console.error(err);
+                res.writeStatus('500 oops! something went wrong')
+                    .end(
+                        JSON.stringify({
+                            error: '500 oops! something went wrong',
+                        }),
+                        true
+                    );
             }
-            let isAllowed = false;
-            const user = jwt.verify(token, JWT_SECRET); // Throws if invalid
-            checkApprovedReservationNow(user.id)
-                .then((res) => {
-                    isAllowed = res;    
-                })
-                .catch(err => {
-                    console.error(err);
-                    isAllowed = false;
-                    res.writeStatus('401 Unauthorized')
-                        .end(
-                            JSON.stringify({
-                                error: 'Unauthorized',
-                            }),
-                            true
-                        );
-                });
-
-            if (!isAllowed && user.role !== 'admin') {
-                console.log(`403 User ${user.username} tried to connect outside allowed time`);
-                res.writeStatus('403 Forbidden').end();
-                return;
-            }
-
-            res.upgrade(
-                { user }, // pass user into ws object
-                req.getHeader('sec-websocket-key'),
-                req.getHeader('sec-websocket-protocol'),
-                req.getHeader('sec-websocket-extensions'),
-                context
-            );
                 
         },
         open: (ws) => {
