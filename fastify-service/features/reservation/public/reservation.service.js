@@ -10,9 +10,31 @@ export async function getReservationByUser(username) {
 }
 
 export async function createReservation(reservation) {
-    const user = await db('users').where({ username: reservation.username }).first().select('id');
-    const observasi_mulai = new Date(reservation.date + ' ' + reservation.start).toISOString();
-    const observasi_selesai = new Date(reservation.date + ' ' + reservation.end).toISOString();
+    const user = await db('users')
+      .select('id')
+      .where({ username: reservation.username })
+      .first();
+
+    if (!user) throw new Error ('User not found!');
+    
+    const observasi_mulai = new Date(`${reservation.date_start} ${reservation.time_start}`).toISOString();
+    const observasi_selesai = new Date(`${reservation.date_end} ${reservation.time_end}`).toISOString();
+    const now = new Date();
+
+    if (observasi_mulai < now){
+      return { error: 'Tidak bisa reservasi sebelum waktu sekarang!'};
+    }
+
+    const conflict = await db('user_reservation')
+      .where(function (){
+        this.where('observasi_mulai', '<', observasi_selesai)
+          .andWhere('observasi_selesai', '>', observasi_mulai);
+      })
+      .first();
+    
+    if (conflict){
+      return { error: 'Ada rentang jam observasi yang sudah di reservasi!'};
+    }
     return db('user_reservation').insert({ user_id: user.id, observasi_mulai, observasi_selesai, nama: reservation.name, email: reservation.email, deskripsi: reservation.description });
 }
 

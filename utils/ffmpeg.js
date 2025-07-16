@@ -27,7 +27,7 @@ export function startFFmpeg() {
     '-f', 'mpegts',
     'pipe:4',
   ], {
-    stdio: ['pipe', 'pipe', 'pipe', 'pipe', 'pipe']
+    stdio: ['pipe', 'pipe', 'pipe', 'pipe', 'pipe'],
   });
 
   ffmpeg.stderr.on('data', (data) => {

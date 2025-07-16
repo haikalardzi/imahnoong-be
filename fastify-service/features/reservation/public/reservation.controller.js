@@ -18,9 +18,17 @@ export async function fetchUserReservation(req, reply){
     }
 }
 
+/**
+ * 
+ * @param {import('fastify').FastifyRequest} req 
+ * @param {import('fastify').FastifyReply} reply 
+ */
 export async function makeReservation(req, reply) {
     try{
         const data = await createReservation(req.body);
+        if (data.error){
+            reply.code(400).send({ error: data.error });
+        }
         reply.send(data);
     } catch (err) {
         reply.code(500).send({ error: err.message });
