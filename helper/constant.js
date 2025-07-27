@@ -13,4 +13,4 @@ export const FASTIFY_URL = `http://${process.env.SERVER_HOST}:${process.env.SERV
 
 export const WS_URL = `ws://${process.env.WS_HOST}:${process.env.WS_PORT}` || 'ws://localhost:9005';
 
-export const FE_URL = process.env.FE_URL || 'http://localhost:5173';
+export const FE_URL = 'http://proto.28manzilah.com';

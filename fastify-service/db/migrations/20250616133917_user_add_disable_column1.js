@@ -5,12 +5,12 @@
  */
 export function up(knex) {
   return knex.schema.alterTable('users', (table) => {
-    table.boolean('disable').defaultTo(false);
+    // table.boolean('disable').defaultTo(false);
   });
 }
 
 export function down(knex) {
   return knex.schema.alterTable('users', (table) => {
-    table.dropColumn('disable');
+    // table.dropColumn('disable');
   });
 }

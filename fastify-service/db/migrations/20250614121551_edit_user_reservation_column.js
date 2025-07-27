@@ -10,6 +10,7 @@ export function up(knex) {
     table.dropColumn('waktu_selesai');
     table.dateTime('observasi_mulai').notNullable();
     table.dateTime('observasi_selesai').notNullable();
+    table.boolean('disable').defaultTo(false).notNullable();
   });
 }
 
