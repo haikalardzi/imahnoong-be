@@ -13,7 +13,7 @@ export async function up(knex) {
     table.float('distance').notNullable();
     table.string('constellation').notNullable();
     table.string('declination').notNullable();
-    table.string('right_ascention').notNullable();
+    table.string('right_ascension').notNullable();
     table.string('altitude').notNullable();
     table.string('azimuth').notNullable();
 
