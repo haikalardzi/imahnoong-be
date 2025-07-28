@@ -20,6 +20,8 @@ coverage
 *.local
 certificates
 
+/fastify-service/db/seeds/*
+
 /cypress/videos/
 /cypress/screenshots/
 

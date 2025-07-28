@@ -13,14 +13,14 @@ export async function up(knex) {
     table.float('distance').notNullable();
     table.string('constellation').notNullable();
     table.string('declination').notNullable();
-    table.string('right_ascention').notNullable();
+    table.string('right_ascension').notNullable();
     table.string('altitude').notNullable();
     table.string('azimuth').notNullable();
 
     table.text('description'); // Optional
 
     table.timestamp('created_at').defaultTo(knex.fn.now());
-    table.boolean('is_deleted').defaultTo(false).notNullable();
+    table.boolean('disable').defaultTo(false).notNullable();
     
   });
   // await knex.raw(`GRANT ALL PRIVILEGES ON TABLE observation_records TO demo`);

@@ -15,5 +15,5 @@ export async function editUser(id, username, role, disable) {
 }
 
 export async function deleteUser(id) {
-  return db('users').where({ id }).update({ is_deleted: true });  
+  return db('users').where({ id }).update({ disable: true });  
 }
