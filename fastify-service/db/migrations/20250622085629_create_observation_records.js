@@ -20,11 +20,11 @@ export async function up(knex) {
     table.text('description'); // Optional
 
     table.timestamp('created_at').defaultTo(knex.fn.now());
-    table.boolean('is_deleted').defaultTo(false).notNullable();
+    table.boolean('disable').defaultTo(false).notNullable();
     
   });
-  await knex.raw(`GRANT ALL PRIVILEGES ON TABLE observation_records TO demo`);
-  await knex.raw(`GRANT ALL PRIVILEGES ON SEQUENCE observation_records_id_seq TO demo`);
+  // await knex.raw(`GRANT ALL PRIVILEGES ON TABLE observation_records TO demo`);
+  // await knex.raw(`GRANT ALL PRIVILEGES ON SEQUENCE observation_records_id_seq TO demo`);
 }
 
 export async function down(knex) {

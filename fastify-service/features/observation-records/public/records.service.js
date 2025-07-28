@@ -40,13 +40,13 @@ export async function saveMetadata(username, filename, data) {
 }
 
 export async function getRecordsByUser(username) {
-    return await db('observation_records').where({ username, is_deleted: false }).orderBy('created_at', 'desc');
+    return await db('observation_records').where({ username, disable: false }).orderBy('created_at', 'desc');
 }
 
 export async function getLast6Records() {
-    return await db('observation_records').where({ is_deleted: false }).orderBy('created_at', 'desc').limit(6);
+    return await db('observation_records').where({ disable: false }).orderBy('created_at', 'desc').limit(6);
 }
 
 export async function getRecord(id) {
-    return await db('observation_records').where({ id: id, is_deleted: false }).first();
+    return await db('observation_records').where({ id: id, disable: false }).first();
 }

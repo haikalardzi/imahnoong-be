@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs';
 export async function seed(knex) {
   await knex('users').del();
 
-  const hash = bcrypt.hashSync('imahnoong', 12);
+  const hash = bcrypt.hashSync('', 12);
 
   await knex('users').insert([
     { 

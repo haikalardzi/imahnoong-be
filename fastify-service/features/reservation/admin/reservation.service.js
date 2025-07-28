@@ -23,5 +23,5 @@ export async function editReservationStatus(id, status) {
 }
 
 export async function deleteReservation(id) {
-    return db('user_reservation').where({ id }).update({ is_deleted: true }).returning('*').first();
+    return db('user_reservation').where({ id }).update({ disable: true }).returning('*').first();
 }

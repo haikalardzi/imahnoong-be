@@ -20,7 +20,8 @@
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.52.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "vitest": "^3.2.4"
   },
   "scripts": {
     "start": "node server.js",
