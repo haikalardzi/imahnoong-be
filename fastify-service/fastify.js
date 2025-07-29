@@ -44,7 +44,7 @@ export default function startFastifyServer() {
     }
   });
   app.register(FastifyCors, {
-    origin: ['http://localhost:5173', FE_URL], // Your React app URLs
+    origin: [FE_URL, 'http://localhost:5173'], // Your React app URLs
     credentials: true, // ✅ This is crucial for cookies!
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   });  
