@@ -15,7 +15,9 @@ export function startWebSocketServer (){
         '/view-control'
     ];
 
-    const app = new WebSocketServer({host: HOST, port: PORT});
+    const app = new WebSocketServer({host: HOST, port: PORT}, () => {
+        console.log(`✅ WebSocket listening on ws://${HOST}:${PORT}`);
+    });
 
     const controlClients = new Set();
     const streamClients = new Set();
