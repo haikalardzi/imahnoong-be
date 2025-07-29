@@ -35,6 +35,11 @@ export async function makeReservation(req, reply) {
     }
 }
 
+/**
+ * 
+ * @param {import('fastify').FastifyRequest} req 
+ * @param {import('fastify').FastifyReply} reply 
+ */
 export async function checkControl (req, reply) {
     const isAllowed = await checkApprovedReservationNow(req.user.id);
     if (!isAllowed && req.user.role !== 'admin') {
