@@ -9,8 +9,8 @@ export function startFFmpeg() {
     // Split input to two outputs
     '-filter_complex', 
     '[0:v]split=2[raw1][raw2];'+
-    '[raw1]scale=1280:500[mjpeg];'+
-    '[raw2]scale=1280:500[ts]',
+    `[raw1]scale=${process.env.RESOLUTION}[mjpeg];`+
+    `[raw2]scale=${process.env.RESOLUTION}[ts]`,
 
     // --- MJPEG for control ---
     '-map', '[mjpeg]',
@@ -33,7 +33,6 @@ export function startFFmpeg() {
   ffmpeg.stderr.on('data', (data) => {
     // console.error(`FFmpeg stderr: ${data}`);
   });
-
   ffmpeg.on('error', (err) => {
     console.error('FFmpeg error:', err);
   });

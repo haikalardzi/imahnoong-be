@@ -22,10 +22,12 @@ export function registerControllerEndpoint(app, raspiSockets, pathnames){
         if (!pathnames.includes(pathname)) ws.close(4000, 'Not found');
         if (pathname !== '/control') return;
         try {
-            const cookies = parse(req.headers.cookie || '');
-            const token = cookies.refreshToken;
+            const token = req.headers['sec-websocket-protocol'];
 
-            console.log(cookies);
+            if (control.size > 1) {
+                ws.close(4000, 'only one at a time');
+                return;
+            }
 
             if (!token){
                 ws.close(4001, 'Unauthorized');
@@ -49,13 +51,22 @@ export function registerControllerEndpoint(app, raspiSockets, pathnames){
 
             if (!raspiSockets.control) {
                 console.log('[control] starting control.');
-                connect(raspiSockets, 'control', 'ws', (msg) => {});
+                connect(raspiSockets, 'control', 'ws', (msg) => {
+                    const buffer = msg;
+                    const text = new TextDecoder().decode(buffer);
+                    const response = JSON.parse(text); // First 8 bytes
+                    const now = new Date();
+                    response.servertime = now.getTime();
+                    ws.send(JSON.stringify(response));
+                });
             }
 
             ws.on('message', (message, isBinary) => {
                 if (!isBinary){
                     try {
                         const command = JSON.parse(message.toString());
+                        const ts = new Date();
+                        // console.log(`cmd: ${ts - command.timestamp} ms`);
                         forwardToRaspi(raspiSockets, 'control', JSON.stringify(command));
                         console.log('[control] Sent command:', command.dir);
                     } catch (err){
@@ -181,6 +192,11 @@ export function registerControllerStreamEndpoint(app, raspiSockets, ffmpeg, clie
         const pathname = new URL(req.url, `http://${req.headers.host}`).pathname;
         if (!pathnames.includes(pathname)) ws.close(4000, 'Not found');
         if (pathname !== '/view-control') return;
+        if (clients.size > 1) {
+            ws.close(4000, 'only one at a time');
+            return;
+        }
+        console.log("[view-stream]: connection success");
 
         clients.add(ws);
 
@@ -190,6 +206,12 @@ export function registerControllerStreamEndpoint(app, raspiSockets, ffmpeg, clie
                 timestamp = msg.readBigUInt64LE(0);
                 const imageBytes = msg.slice(8);
                 ffmpeg.stdin.write(imageBytes);
+                // if (!test){
+                //     raspiSockets.stream.pause();
+                //     ffmpeg.stdin.once('drain', () => {
+                //         raspiSockets.stream.resume();
+                //     });
+                // }
             });
         }
 

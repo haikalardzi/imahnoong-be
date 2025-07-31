@@ -16,7 +16,17 @@ import { deleteRecordHandler, fetchAllRecordsHandler } from "../features/observa
  * @param {import("fastify").FastifyInstance} fastify 
  */
 export default function webRoutes(fastify) {
-    fastify.get('/', (request, reply) => reply.send('hello world!'));
+    fastify.get('/', async (request, reply) => {
+        await fetch('http://192.168.2.36:8000/', {
+            method: 'GET',
+        }).then(async (res) => {
+            reply.send(await res.json());
+        })
+        .catch((err) => {
+            reply.send(err);
+        })
+        // reply.send('hello world!')
+    });
     fastify.post('/register', registerHandler);
     fastify.post('/login', loginHandler);
     fastify.post('/logout', logoutHandler);

@@ -13,8 +13,8 @@ export async function saveFile(username, file, filename) {
     const savePath = path.join(userDir, filename);
     const resized = await sharp(file)
         .resize({
-            width: 1280,
-            height: 960,
+            width: parseInt(process.env.RES_SAVE_W),
+            height: parseInt(process.env.RES_SAVE_H),
             fit: 'fill',
         })
         .toBuffer();
